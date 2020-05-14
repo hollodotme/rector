@@ -1,4 +1,4 @@
-# All 482 Rectors Overview
+# All 484 Rectors Overview
 
 - [Projects](#projects)
 - [General](#general)
@@ -22,6 +22,7 @@
 - [JMS](#jms) (2)
 - [Laravel](#laravel) (6)
 - [Legacy](#legacy) (2)
+- [MockistaToMockery](#mockistatomockery) (2)
 - [MysqlToMysqli](#mysqltomysqli) (4)
 - [Naming](#naming) (1)
 - [Nette](#nette) (11)
@@ -4129,6 +4130,56 @@ Change functions to static calls, so composer can autoload them
 
 <br>
 
+## MockistaToMockery
+
+### `MockeryTearDownRector`
+
+- class: [`Rector\MockistaToMockery\Rector\Class_\MockeryTearDownRector`](/../master/rules/mockista-to-mockery/src/Rector/Class_/MockeryTearDownRector.php)
+- [test fixtures](/../master/rules/mockista-to-mockery/tests/Rector/Class_/MockeryTearDownRector/Fixture)
+
+Add Mockery::close() in tearDown() method if not yet
+
+```diff
+ use PHPUnit\Framework\TestCase;
+
+ class SomeTest extends TestCase
+ {
++    protected function tearDown(): void
++    {
++        Mockery::close();
++    }
+     public function test()
+     {
+         $mockUser = mock(User::class);
+     }
+ }
+```
+
+<br>
+
+### `MockistaMockToMockeryMockRector`
+
+- class: [`Rector\MockistaToMockery\Rector\ClassMethod\MockistaMockToMockeryMockRector`](/../master/rules/mockista-to-mockery/src/Rector/ClassMethod/MockistaMockToMockeryMockRector.php)
+- [test fixtures](/../master/rules/mockista-to-mockery/tests/Rector/ClassMethod/MockistaMockToMockeryMockRector/Fixture)
+
+Change functions to static calls, so composer can autoload them
+
+```diff
+ class SomeTest
+ {
+     public function run()
+     {
+-        $mockUser = mock(User::class);
+-        $mockUser->getId()->once->andReturn(1);
+-        $mockUser->freeze();
++        $mockUser = Mockery::mock(User::class);
++        $mockUser->expects()->getId()->once()->andReturn(1);
+     }
+ }
+```
+
+<br>
+
 ## MysqlToMysqli
 
 ### `MysqlAssignToMysqliRector`
@@ -6221,6 +6272,7 @@ Turns namespaced classes in one file to standalone PSR-4 classes.
 ### `NormalizeNamespaceByPSR4ComposerAutoloadRector`
 
 - class: [`Rector\PSR4\Rector\Namespace_\NormalizeNamespaceByPSR4ComposerAutoloadRector`](/../master/rules/psr4/src/Rector/Namespace_/NormalizeNamespaceByPSR4ComposerAutoloadRector.php)
+- [test fixtures](/../master/rules/psr4/tests/Rector/Namespace_/NormalizeNamespaceByPSR4ComposerAutoloadRector/Fixture)
 
 Changes namespace and class names to match PSR-4 in composer.json autoload section
 
